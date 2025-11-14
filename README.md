@@ -1,6 +1,5 @@
 
 ![Java](https://img.shields.io/badge/Java-9+-blue?logo=java)
-![Maven Central](https://img.shields.io/badge/Maven%20Central-available-blue?logo=apachemaven)
 ![OpenTelemetry](https://img.shields.io/badge/observability-OpenTelemetry-blueviolet?logo=opentelemetry)
 
 
@@ -34,3 +33,6 @@ public class BitryonIntegrationExampleBootApplication {
 	}
 }
 ```
+
+Or, check out io.bitryon.logger.opentelemetry.BitryonLoggingOpenTelemetryExample
+
