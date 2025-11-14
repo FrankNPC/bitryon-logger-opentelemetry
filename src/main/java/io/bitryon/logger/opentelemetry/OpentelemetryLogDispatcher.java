@@ -50,7 +50,7 @@ public class OpentelemetryLogDispatcher implements LogDispatcher {
 					.setEndpoint(expoterEndpoint)
 					.addHeader("Authorization", "Bearer " + bitryonlLoggerProvider.getLocalConfiguration().getAppKey())// appkey
 					.addHeader(ConfKeyDefinition.HOST_ID, bitryonlLoggerProvider.getAppNodeConfiguration().getHostId())
-					.addHeader(ConfKeyDefinition.FILE_NAME, bitryonlLoggerProvider.getLoggerConfiguration().getFileName())// the constant file name if no file writing
+					.addHeader(ConfKeyDefinition.FILE_NAME, bitryonlLoggerProvider.getAppNodeConfiguration().getApplicationName())// the constant file name if no file writing
 					.build();
 
 //			// Not supported yet
@@ -77,10 +77,6 @@ public class OpentelemetryLogDispatcher implements LogDispatcher {
 		return otelLogger;
 	}
 
-
-	/**
-	 * If writing logs to files, we should always read file for logs (collector ?), instead of getting logs from logger
-	 */
 	@Override
 	public void emit(LoggerProvider bitryonlLoggerProvider, String traceId, byte[] logBytes) {
 		getOtelLogger(bitryonlLoggerProvider)

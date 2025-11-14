@@ -5,9 +5,11 @@
 
 Opentelemetry integration.
 
-the LogDispatcher is to send logs from bitryon logger to opentelemetry's receiver and exporter.
+the LogDispatcher is to forward logs from bitryon logger to opentelemetry's receiver and exporter.
 In general, clients should schedule own local storage and exporter to prevent log loss before sending to bitryon directly.
-Currently bitryon logger ingest server only supports HTTPs with binary data, will see if there is a need of gRPC.
+Currently bitryon logger ingest server only supports HTTPs with string/binary data, will see if there is a need of gRPC.
+
+Ideally, we should upload logs from the log files so we can keep file name and logs consistent.
 
 
 For conf:
