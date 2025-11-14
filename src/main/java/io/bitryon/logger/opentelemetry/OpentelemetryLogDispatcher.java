@@ -23,22 +23,18 @@ public class OpentelemetryLogDispatcher implements LogDispatcher {
 	}
 	
 	private Logger otelLogger;
-	private String fileName = "";
 	private OtlpHttpLogRecordExporter otlpHttpLogRecordExporter;
 	private SdkLoggerProvider sdkLoggerProvider ;
 
 	private Logger getOtelLogger(LoggerProvider bitryonlLoggerProvider) {
 		if (otelLogger == null) {
-			otelLogger = loadOtelLogger(bitryonlLoggerProvider, false);
-		}else if (!fileName.equals(bitryonlLoggerProvider.getCurrentLogFileName())) {
-			otelLogger = loadOtelLogger(bitryonlLoggerProvider, true);
+			otelLogger = loadOtelLogger(bitryonlLoggerProvider);
 		}
 		return otelLogger;
 	}
 	
-	private synchronized Logger loadOtelLogger(LoggerProvider bitryonlLoggerProvider, boolean force) {
-		if (otelLogger == null || force) {
-			if (otelLogger!=null && fileName.equals(bitryonlLoggerProvider.getCurrentLogFileName())) { return otelLogger; }
+	private synchronized Logger loadOtelLogger(LoggerProvider bitryonlLoggerProvider) {
+		if (otelLogger == null) {
 			
 			Resource resource = 
 					Resource
@@ -50,13 +46,11 @@ public class OpentelemetryLogDispatcher implements LogDispatcher {
 							bitryonlLoggerProvider.getLoggerConfiguration().getLoggerSchemaVersion())
 					.build();
 
-			String theFileName = bitryonlLoggerProvider.getCurrentLogFileName();
-			
-			OtlpHttpLogRecordExporter theOtlpHttpLogRecordExporter = OtlpHttpLogRecordExporter.builder()
+			otlpHttpLogRecordExporter = OtlpHttpLogRecordExporter.builder()
 					.setEndpoint(expoterEndpoint)
 					.addHeader("Authorization", "Bearer " + bitryonlLoggerProvider.getLocalConfiguration().getAppKey())// appkey
 					.addHeader(ConfKeyDefinition.HOST_ID, bitryonlLoggerProvider.getAppNodeConfiguration().getHostId())
-					.addHeader(ConfKeyDefinition.FILE_NAME, theFileName)
+					.addHeader(ConfKeyDefinition.FILE_NAME, bitryonlLoggerProvider.getLoggerConfiguration().getFileName())// the constant file name if no file writing
 					.build();
 
 //			// Not supported yet
@@ -66,37 +60,27 @@ public class OpentelemetryLogDispatcher implements LogDispatcher {
 //					.addHeader("Authorization", "Bearer " + bitryonlLoggerProvider.getLocalConfiguration().getAppKey())// appkey
 //					.build();
 
-			SdkLoggerProvider theSdkLoggerProvider = 
+			sdkLoggerProvider = 
 					SdkLoggerProvider
 					.builder()
 					.setResource(resource)
 					.addLogRecordProcessor(
 							BatchLogRecordProcessor
-							.builder(theOtlpHttpLogRecordExporter)
+							.builder(otlpHttpLogRecordExporter)
 							.setMaxQueueSize(2048)
 							.setMaxExportBatchSize(512)
 							.setScheduleDelay(Duration.ofSeconds(5)).build())
 					.build();
 
-			otelLogger = theSdkLoggerProvider.loggerBuilder(bitryonlLoggerProvider.getLogger().getClass().getName()).build();
-			fileName = theFileName;
-
-			// call a thread to shut down the old exporters
-			if (otlpHttpLogRecordExporter!=null) {
-				new Thread(()->{
-					sdkLoggerProvider.forceFlush();
-					sdkLoggerProvider.shutdown();
-					
-					otlpHttpLogRecordExporter.flush();
-					otlpHttpLogRecordExporter.shutdown();
-				}).start();
-			}
-			otlpHttpLogRecordExporter = theOtlpHttpLogRecordExporter;
-			sdkLoggerProvider = theSdkLoggerProvider;
+			otelLogger = sdkLoggerProvider.loggerBuilder(bitryonlLoggerProvider.getLogger().getClass().getName()).build();
 		}
 		return otelLogger;
 	}
 
+
+	/**
+	 * If writing logs to files, we should always read file for logs (collector ?), instead of getting logs from logger
+	 */
 	@Override
 	public void emit(LoggerProvider bitryonlLoggerProvider, String traceId, byte[] logBytes) {
 		getOtelLogger(bitryonlLoggerProvider)

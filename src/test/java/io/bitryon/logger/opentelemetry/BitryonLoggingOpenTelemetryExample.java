@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.bitryon.logger.boostrap.LoggingInitiation;
 import io.bitryon.logger.boostrap.LoggingMethodIntercepter;
@@ -12,9 +13,13 @@ import io.bitryon.logger.provider.LoggerProvider;
 
 public class BitryonLoggingOpenTelemetryExample {
 	
-	public static void main(String... args) throws IOException {
+	static {
 		// 1: load logger agent
 		LoggingInitiation.premain(null);
+	}
+
+	@Test
+	public void test_OpentelemetryLogDispatcher() throws IOException {
 
 		// 2: load logger configure
 //		// start after the logging proxy to launch Opentelemetry
