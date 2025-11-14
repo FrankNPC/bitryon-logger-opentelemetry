@@ -42,5 +42,5 @@ public class BitryonIntegrationExampleBootApplication {
 }
 ```
 
-Or, check out io.bitryon.logger.opentelemetry.BitryonLoggingOpenTelemetryExample
+Or, check out [BitryonLoggingOpenTelemetryExampleTest](https://github.com/FrankNPC/bitryon-logger-opentelemetry/blob/master/src/test/java/io/bitryon/logger/opentelemetry/BitryonLoggingOpenTelemetryExampleTest.java)
 

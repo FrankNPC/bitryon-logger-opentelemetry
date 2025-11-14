@@ -11,7 +11,7 @@ import io.bitryon.logger.boostrap.LoggingMethodIntercepter;
 import io.bitryon.logger.provider.LoggerFactory;
 import io.bitryon.logger.provider.LoggerProvider;
 
-public class BitryonLoggingOpenTelemetryExample {
+public class BitryonLoggingOpenTelemetryExampleTest {
 	
 	static {
 		// 1: load logger agent
