@@ -3,26 +3,66 @@
 ![OpenTelemetry](https://img.shields.io/badge/observability-OpenTelemetry-blueviolet?logo=opentelemetry)
 
 
-Bitryon Logger Opentelemetry integration.
+# Bitryon Logger Opentelemetry integration.
 
 the LogDispatcher is to forward logs from bitryon logger to opentelemetry's receiver and exporter.
 In general, clients should have own local storage and exporter to prevent log loss before sending to bitryon directly.
 
 Currently bitryon logger ingest server supports HTTPs with string/binary data, will see if there is a need of gRPC.
 
-Ideally, we should upload logs from the log files so we can keep file name and logs consistent.
 
+### There are two options with OpenTelemetry to upload logs:
 
-For conf:
+1, OpentelemetryLogDispatcher, conf:
 
-local.app-key is required to identify the app to upload logs.
+https://dev-logging-ingest-server.bitryon.io:8443/v1/logs 
+
+local.app-key is required to identify the app to upload logs. 
 
 app-node.host-id is required to identify the logs from which node created the logs.
 
-app-node.application-name is for the file name because, we're not able precisely get the file name during the log farward. And the log file name isnt that important.
+app-node.application-name will be the file name because, we're not able precisely get the file name during the log forward.
 
 
-To start bitryon logger and opentelemetry:
+
+2, OpenTelemetry's built-in Collector and Exporter, conf:
+
+https://dev-logging-ingest-server.bitryon.io:8443/v2/logs 
+
+```java
+receivers:
+  filelog:
+    include:
+      - /var/log/myapp.log
+    include_file_name: true
+    start_at: end
+    poll_interval: 200ms
+    operators:
+      - type: add
+        field: attributes.environment
+        value: production
+
+exporters:
+  otlphttp:
+    endpoint: "https://your-receiver.example.com:4318"
+    headers:
+      Authorization: "Bearer ApiKey_abc123"
+      host-id: "your-service-name" # required
+    tls:
+      insecure: false
+
+service:
+  pipelines:
+    logs:
+      receivers: [filelog]
+      exporters: [otlphttp]
+
+```
+
+
+
+
+## start bitryon logger and OpenTelemetry:
 
 ```java 
 // In spring

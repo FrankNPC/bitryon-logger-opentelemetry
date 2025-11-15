@@ -15,10 +15,10 @@ import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.semconv.ServiceAttributes;
 
 
-public class OpentelemetryLogDispatcher implements LogDispatcher {
+public class OpenTelemetryLogDispatcher implements LogDispatcher {
 	
 	private String expoterEndpoint;
-	public OpentelemetryLogDispatcher(String expoterEndpoint) {
+	public OpenTelemetryLogDispatcher(String expoterEndpoint) {
 		this.expoterEndpoint = expoterEndpoint;
 	}
 	
@@ -81,7 +81,6 @@ public class OpentelemetryLogDispatcher implements LogDispatcher {
 	public void emit(LoggerProvider bitryonlLoggerProvider, String traceId, byte[] logBytes) {
 		getOtelLogger(bitryonlLoggerProvider)
 			.logRecordBuilder()
-			//.setSeverity(Severity.INFO)
 			.setBody(Value.of(logBytes))
 			.emit();
 	}
