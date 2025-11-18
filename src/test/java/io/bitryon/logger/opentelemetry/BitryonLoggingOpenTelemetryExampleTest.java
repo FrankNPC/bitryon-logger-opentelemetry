@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.bitryon.logger.boostrap.LoggingInitiation;
+import io.bitryon.logger.boostrap.LoggingProxyInitiation;
 import io.bitryon.logger.boostrap.LoggingMethodIntercepter;
 import io.bitryon.logger.provider.LoggerFactory;
 import io.bitryon.logger.provider.LoggerProvider;
@@ -15,7 +15,7 @@ public class BitryonLoggingOpenTelemetryExampleTest {
 	
 	static {
 		// 1: load logger agent
-		LoggingInitiation.premain(null);
+		LoggingProxyInitiation.premain(null);
 	}
 
 	@Test
