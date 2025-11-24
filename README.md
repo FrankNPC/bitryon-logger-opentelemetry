@@ -3,12 +3,14 @@
 ![OpenTelemetry](https://img.shields.io/badge/observability-OpenTelemetry-blueviolet?logo=opentelemetry)
 
 
-# Bitryon Logger Opentelemetry integration.
+# Bitryon Logger Opentelemetry.
 
-the LogDispatcher is to forward logs from bitryon logger to opentelemetry's receiver and exporter.
+bitryon-logger-opentelemetry is a wrapper through opentelemetry and LogDispatcher, to forward logs from bitryon logger to opentelemetry's receiver and exporter.
 In general, clients should have own local storage and exporter to prevent log loss before sending to bitryon directly.
 
-Currently bitryon logger ingest server supports HTTPs with string/binary data, will see if there is a need of gRPC.
+- Currently bitryon logger ingest server supports HTTPs with string/binary data, will see if there is a need of gRPC.
+
+bitryon logger is a tracer and a logger both. See [bitryon-logging-java-example](https://github.com/FrankNPC/bitryon-logging-examples/tree/master/bitryon-logging-java-example)
 
 
 ### There are two options with OpenTelemetry to upload logs:
