@@ -10,7 +10,7 @@ In general, clients should have own local storage and exporter to prevent log lo
 
 - Currently bitryon logger ingest server supports HTTPs with string/binary data, will see if there is a need of gRPC.
 
-bitryon logger is a tracer and a logger both. See [bitryon-logging-java-example](https://github.com/FrankNPC/bitryon-logging-examples)
+bitryon logger is a tracer and a logger both. See [bitryon-logging-java-example](https://github.com/FrankNPC/bitryon-logging-tracing-examples)
 
 
 ### There are two options with OpenTelemetry to upload logs:
